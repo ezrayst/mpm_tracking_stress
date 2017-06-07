@@ -22,6 +22,8 @@ int main() {
     std::vector<std::array<double, 3>> stress;
     std::array<double, 3> coordinates;
     std::vector<double> time_step;
+    unsigned total_num_points;
+    const unsigned point_id = 150;
 
     //! User input inputFilename and outputFilename
     std::string foldername;
@@ -33,7 +35,7 @@ int main() {
     if (foldername == "") foldername = "bin/column1_elastic/";
 
     //! Get output file name
-    outputfilename = foldername + "stress.txt";
+    outputfilename = foldername + "stress_" + std::to_string(point_id) + ".txt";
 
     //! Loop through different input file name
     unsigned ntime = 50;
@@ -58,8 +60,6 @@ int main() {
       char unused_char;
       std::string unused_lines;
       double value;
-      unsigned total_num_points;
-      unsigned point_id = 1;
       std::array<double, 3> current_stress;
 
       //! Loop through the unused characters
