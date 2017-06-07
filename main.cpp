@@ -2,12 +2,9 @@
 //!
 //! Get input which are the results from mpm3d
 
-#include <algorithm>
 #include <array>
-#include <cmath>
 #include <fstream>
 #include <iostream>
-#include <memory>
 #include <vector>
 
 //! \brief    Get stress vs time
@@ -23,7 +20,7 @@ int main() {
     std::array<double, 3> coordinates;
     std::vector<double> time_step;
     unsigned total_num_points;
-    const unsigned point_id = 150;
+    const unsigned point_id = 101;
     const unsigned ntime = 50;
 
     //! User input inputFilename and outputFilename
@@ -82,7 +79,7 @@ int main() {
         inputFile >> coordinates.at(2);
 
         //! Again loop through the unused string to the interested line
-        for (unsigned i = 0; i < total_num_points * 3 + 4 + point_id; ++i) {
+        for (unsigned i = 0; i < total_num_points * 3 + 4; ++i) {
           std::getline(inputFile, unused_lines);
         }
       } else {
@@ -98,7 +95,7 @@ int main() {
       inputFile >> current_stress.at(2);
 
       //! Store in stress vector
-      stress.push_back(current_stress);
+      stress.emplace_back(current_stress);
 
       inputFile.close();
       std::cout << "The input file for time step: " << std::to_string(t)
