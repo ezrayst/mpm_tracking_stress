@@ -20,6 +20,7 @@ int main() {
 
     //! Initialize a vector stress to contain the stress of a point
     std::vector<std::array<double, 3>> stress;
+    std::array<double, 3> coordinates;
     std::vector<double> time_step;
 
     //! User input inputFilename and outputFilename
@@ -58,6 +59,7 @@ int main() {
       std::string unused_lines;
       double value;
       unsigned total_num_points;
+      unsigned point_id = 1;
       std::array<double, 3> current_stress;
 
       //! Loop through the unused characters
@@ -68,16 +70,26 @@ int main() {
       //! Get total number of points
       inputFile >> total_num_points;
 
-      //! Again loop through the unused string
-      for (unsigned i = 0; i < total_num_points * 3 + 5; ++i) {
-        std::getline(inputFile, unused_lines);
-      }
+      if (t == 0) {
+        //! Again loop through the unused string to find the coords
+        for (unsigned i = 0; i <= point_id; ++i) {
+          std::getline(inputFile, unused_lines);
+        }
 
-      //! The next line is point with id = 0
-      //! Input point as the point id
-      unsigned point = 500;
-      for (unsigned i = 0; i < point; ++i) {
-        std::getline(inputFile, unused_lines);
+        //! Get the coordinates
+        inputFile >> coordinates.at(0);
+        inputFile >> coordinates.at(1);
+        inputFile >> coordinates.at(2);
+
+        //! Again loop through the unused string to the interested line
+        for (unsigned i = 0; i < total_num_points * 3 + 4 + point_id; ++i) {
+          std::getline(inputFile, unused_lines);
+        }
+      } else {
+        //! Again loop through the unused string to the interested line
+        for (unsigned i = 0; i < total_num_points * 3 + 5 + point_id; ++i) {
+          std::getline(inputFile, unused_lines);
+        }
       }
 
       //! Loop through points to get all stress
@@ -96,6 +108,12 @@ int main() {
 
     //! Open output file and store all data
     std::ofstream outputFile(outputfilename);
+
+    //! Write the coordinates
+    for (double coordinate : coordinates) {
+      outputFile << coordinate << "\t";
+    }
+    outputFile << "\n";
 
     for (unsigned i = 0; i <= ntime; ++i) {
       outputFile << time_step.at(i) << "\t" << stress.at(i).at(0) << "\t"
