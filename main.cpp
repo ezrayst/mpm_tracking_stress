@@ -24,6 +24,7 @@ int main() {
     std::vector<double> time_step;
     unsigned total_num_points;
     const unsigned point_id = 150;
+    const unsigned ntime = 50;
 
     //! User input inputFilename and outputFilename
     std::string foldername;
@@ -38,7 +39,6 @@ int main() {
     outputfilename = foldername + "stress_" + std::to_string(point_id) + ".txt";
 
     //! Loop through different input file name
-    unsigned ntime = 50;
     for (unsigned t = 0; t <= ntime; ++t) {
 
       //! Get vector time_step that contains the time index
