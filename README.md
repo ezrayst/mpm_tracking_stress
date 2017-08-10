@@ -1,7 +1,7 @@
 # mpm_tracking_stress
 Find Stress of Some Partilces vs Time
 
-    1. Run `g++ -std=c++11 main.cpp -o main`
+    1. Run `make clean; make`
 
 Note to Developers
 

@@ -20,17 +20,17 @@ int main() {
     std::array<double, 3> coordinates;
     std::vector<double> time_step;
     unsigned total_num_points;
-    const unsigned point_id = 101;
-    const unsigned ntime = 50;
+    const unsigned point_id = 0;
+    const unsigned ntime = 100;
 
     //! User input inputFilename and outputFilename
     std::string foldername;
     std::string inputfilename;
     std::string outputfilename;
 
-    std::cout << "Type the working folder, default: [bin/column1_elastic/]: ";
+    std::cout << "Type the working folder, default: [bin/element_testing/]: ";
     std::getline(std::cin, foldername);
-    if (foldername == "") foldername = "bin/column1_elastic/";
+    if (foldername == "") foldername = "bin/element_testing/";
 
     //! Get output file name
     outputfilename = foldername + "stress_" + std::to_string(point_id) + ".txt";
@@ -39,11 +39,15 @@ int main() {
     for (unsigned t = 0; t <= ntime; ++t) {
 
       //! Get vector time_step that contains the time index
-      time_step.push_back(t * 1000);
+      time_step.push_back(t * 10000);
 
       //! Get inputfilename
       if (t < 10) {
-        inputfilename = foldername + "Stress0" + std::to_string(t) + "000.vtk";
+        inputfilename = foldername + "Stress00" + std::to_string(t) + "0000.vtk";
+      } else if (t < 100) {
+        inputfilename = foldername + "Stress0" + std::to_string(t) + "0000.vtk";
+      } else if (t < 1000) {
+        inputfilename = foldername + "Stress" + std::to_string(t) + "0000.vtk";
       } else {
         inputfilename = foldername + "Stress" + std::to_string(t) + "000.vtk";
       }
@@ -56,7 +60,6 @@ int main() {
       //! Declare temporary variable
       char unused_char;
       std::string unused_lines;
-      double value;
       std::array<double, 3> current_stress;
 
       //! Loop through the unused characters
@@ -99,7 +102,7 @@ int main() {
 
       inputFile.close();
       std::cout << "The input file for time step: " << std::to_string(t)
-                << "000 has been read."
+                << "0000 has been read."
                 << "\n";
     }
 
