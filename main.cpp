@@ -23,17 +23,17 @@ int main() {
     std::array<double, 3> coordinates;
     std::vector<double> time_step;
     unsigned total_num_points;
-    const unsigned point_id = 790;
-    const unsigned ntime = 5000;
+    const unsigned point_id = 750;
+    const unsigned ntime = 800;
 
     //! User input inputFilename and outputFilename
     std::string foldername;
     std::string inputfilename;
     std::string outputfilename;
 
-    std::cout << "Type the working folder, default: [bin/column_simple_k/]: ";
+    std::cout << "Type the working folder, default: [bin/column_simple_m/]: ";
     std::getline(std::cin, foldername);
-    if (foldername == "") foldername = "bin/column_simple_k/";
+    if (foldername == "") foldername = "bin/column_simple_m/";
 
     //! Get output file name
     outputfilename = foldername + "stress_" + std::to_string(point_id) + ".txt";
@@ -49,11 +49,11 @@ int main() {
 
         //! Use below for Krishna's code
         if (t < 10) {
-          inputfilename = foldername + "Stress000" + std::to_string(t) + "000.vtk";
-        } else if (t < 100) {
           inputfilename = foldername + "Stress00" + std::to_string(t) + "000.vtk";
-        } else if (t < 1000) {
+        } else if (t < 100) {
           inputfilename = foldername + "Stress0" + std::to_string(t) + "000.vtk";
+        } else if (t < 1000) {
+          inputfilename = foldername + "Stress" + std::to_string(t) + "000.vtk";
         } else {
           inputfilename = foldername + "Stress" + std::to_string(t) + "000.vtk";
         }
@@ -133,10 +133,10 @@ int main() {
     std::ofstream outputFile(outputfilename);
 
     //! Write the coordinates
-    for (double coordinate : coordinates) {
-      outputFile << coordinate << "\t";
-    }
-    outputFile << "\n";
+    // for (double coordinate : coordinates) {
+    //   outputFile << coordinate << "\t";
+    // }
+    // outputFile << "\n";
 
     for (unsigned i = 0; i <= ntime; ++i) {
       outputFile << time_step.at(i) << "\t" << stress.at(i).at(0) << "\t"
