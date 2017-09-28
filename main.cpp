@@ -23,20 +23,22 @@ int main() {
     std::array<double, 3> coordinates;
     std::vector<double> time_step;
     unsigned total_num_points;
-    const unsigned point_id = 750;
-    const unsigned ntime = 800;
+    const unsigned point_id = 2;
+    const unsigned ntime = 100;
+
+    std::string data = "Stress";
 
     //! User input inputFilename and outputFilename
     std::string foldername;
     std::string inputfilename;
     std::string outputfilename;
 
-    std::cout << "Type the working folder, default: [bin/column_simple_m/]: ";
+    std::cout << "Type the working folder, default: [bin/mc_elem_testing/]: ";
     std::getline(std::cin, foldername);
-    if (foldername == "") foldername = "bin/column_simple_m/";
+    if (foldername == "") foldername = "bin/mc_elem_testing/";
 
     //! Get output file name
-    outputfilename = foldername + "stress_" + std::to_string(point_id) + ".txt";
+    outputfilename = foldername + data + "_" + std::to_string(point_id) + ".txt";
 
     //! Loop through different input file name
     for (unsigned t = 0; t <= ntime; ++t) {
@@ -49,13 +51,13 @@ int main() {
 
         //! Use below for Krishna's code
         if (t < 10) {
-          inputfilename = foldername + "Stress00" + std::to_string(t) + "000.vtk";
+          inputfilename = foldername + data + "00" + std::to_string(t) + "000.vtk";
         } else if (t < 100) {
-          inputfilename = foldername + "Stress0" + std::to_string(t) + "000.vtk";
+          inputfilename = foldername + data + "0" + std::to_string(t) + "000.vtk";
         } else if (t < 1000) {
-          inputfilename = foldername + "Stress" + std::to_string(t) + "000.vtk";
+          inputfilename = foldername + data + "" + std::to_string(t) + "000.vtk";
         } else {
-          inputfilename = foldername + "Stress" + std::to_string(t) + "000.vtk";
+          inputfilename = foldername + data + std::to_string(t) + "000.vtk";
         }
       } else {
         //! Use below for Shyamini's code
