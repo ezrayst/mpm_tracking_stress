@@ -5,6 +5,7 @@
 #include <array>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 //! \brief    Get stress vs time
@@ -23,19 +24,26 @@ int main() {
     std::array<double, 3> coordinates;
     std::vector<double> time_step;
     unsigned total_num_points;
-    const unsigned point_id = 2;
     const unsigned ntime = 100;
 
-    std::string data = "Stress";
+    std::string data = "Strain";
 
-    //! User input inputFilename and outputFilename
+    //! User input inputFilename and outputFilename, and point_id
     std::string foldername;
     std::string inputfilename;
     std::string outputfilename;
+    std::string point_id_str;
+    unsigned point_id;
 
-    std::cout << "Type the working folder, default: [bin/mc_elem_testing/]: ";
+    std::cout << "Type the working folder, default: [bin/mc_test/]: ";
     std::getline(std::cin, foldername);
-    if (foldername == "") foldername = "bin/mc_elem_testing/";
+    if (foldername == "") foldername = "bin/mc_test/";
+
+    std::cout << "Type the point id, default: [0]: ";
+    std::getline(std::cin, point_id_str);
+    if (point_id_str == "") point_id_str = "0";
+    std::istringstream point_id_ss(point_id_str); 
+    point_id_ss >> point_id;
 
     //! Get output file name
     outputfilename = foldername + data + "_" + std::to_string(point_id) + ".txt";
