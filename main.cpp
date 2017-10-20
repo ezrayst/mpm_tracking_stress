@@ -20,13 +20,14 @@ int main() {
     bool mpm_code = 1;
 
     //! Initialize a vector stress to contain the stress of a point
-    std::vector<std::array<double, 3>> stress;
+    std::vector<std::array<double, 3>> vec_data;
     std::array<double, 3> coordinates;
     std::vector<double> time_step;
     unsigned total_num_points;
     const unsigned ntime = 100;
+    std::string data; 
 
-    std::string data = "Strain";
+    std::vector<std::string> data_vec{"stress", "strain", "acceleration", "velocity"};
 
     //! User input inputFilename and outputFilename, and point_id
     std::string foldername;
@@ -45,118 +46,121 @@ int main() {
     std::istringstream point_id_ss(point_id_str); 
     point_id_ss >> point_id;
 
-    //! Get output file name
-    outputfilename = foldername + data + "_" + std::to_string(point_id) + ".txt";
 
-    //! Loop through different input file name
-    for (unsigned t = 0; t <= ntime; ++t) {
+    for (const auto& component : data_vec) {
+      data = component;
 
-      //! Get vector time_step that contains the time index
-      time_step.push_back(t * 1000);
+      //! Get output file name
+      outputfilename = foldername + data + "_" + std::to_string(point_id) + ".txt";
 
-      //! Get inputfilename
-      if (mpm_code) {
+      //! Loop through different input file name
+      for (unsigned t = 0; t <= ntime; ++t) {
 
-        //! Use below for Krishna's code
-        if (t < 10) {
-          inputfilename = foldername + data + "00" + std::to_string(t) + "000.vtk";
-        } else if (t < 100) {
-          inputfilename = foldername + data + "0" + std::to_string(t) + "000.vtk";
-        } else if (t < 1000) {
-          inputfilename = foldername + data + "" + std::to_string(t) + "000.vtk";
+        //! Get vector time_step that contains the time index
+        time_step.push_back(t * 1000);
+
+        //! Get inputfilename
+        if (mpm_code) {
+
+          //! Use below for Krishna's code
+          if (t < 10) {
+            inputfilename = foldername + data + "00" + std::to_string(t) + "000.vtk";
+          } else if (t < 100) {
+            inputfilename = foldername + data + "0" + std::to_string(t) + "000.vtk";
+          } else if (t < 1000) {
+            inputfilename = foldername + data + "" + std::to_string(t) + "000.vtk";
+          } else {
+            inputfilename = foldername + data + std::to_string(t) + "000.vtk";
+          }
         } else {
-          inputfilename = foldername + data + std::to_string(t) + "000.vtk";
+          //! Use below for Shyamini's code
+          if (t == 0) {
+            inputfilename = foldername + "stress" + std::to_string(t) + ".vtk";
+          } else {
+            inputfilename = foldername + "stress" + std::to_string(t) + "000.vtk";
+          }
         }
-      } else {
-        //! Use below for Shyamini's code
+
+
+        //! Open input file and store x-dir
+        std::ifstream inputFile;
+        inputFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+        inputFile.open(inputfilename);
+
+        //! Declare temporary variable
+        char unused_char;
+        std::string unused_lines;
+        std::array<double, 3> current_data;
+        unsigned skip_char;
+
+        if (mpm_code) {
+          //! Use below for Krishna's code
+          skip_char = 66;
+        } else {
+          //! Use below for Shyamini's code
+          skip_char = 78;
+        }
+
+        //! Loop through the unused characters     
+        for (unsigned i = 0; i < skip_char; ++i) {
+          inputFile >> unused_char;
+        }
+
+        //! Get total number of points
+        inputFile >> total_num_points;
+
         if (t == 0) {
-          inputfilename = foldername + "stress" + std::to_string(t) + ".vtk";
+          //! Again loop through the unused string to find the coords
+          for (unsigned i = 0; i <= point_id; ++i) {
+            std::getline(inputFile, unused_lines);
+          }
+
+          //! Get the coordinates
+          inputFile >> coordinates.at(0);
+          inputFile >> coordinates.at(1);
+          inputFile >> coordinates.at(2);
+
+          //! Again loop through the unused string to the interested line
+          for (unsigned i = 0; i < total_num_points * 3 + 4; ++i) {
+            std::getline(inputFile, unused_lines);
+          }
         } else {
-          inputfilename = foldername + "stress" + std::to_string(t) + "000.vtk";
-        }
-      }
-
-      //! Open input file and store x-dir
-      std::ifstream inputFile;
-      inputFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-      inputFile.open(inputfilename);
-
-      //! Declare temporary variable
-      char unused_char;
-      std::string unused_lines;
-      std::array<double, 3> current_stress;
-      unsigned skip_char;
-
-      if (mpm_code) {
-        //! Use below for Krishna's code
-        skip_char = 66;
-      } else {
-        //! Use below for Shyamini's code
-        skip_char = 78;
-      }
-
-      //! Loop through the unused characters     
-      for (unsigned i = 0; i < skip_char; ++i) {
-        inputFile >> unused_char;
-      }
-
-      //! Get total number of points
-      inputFile >> total_num_points;
-
-      if (t == 0) {
-        //! Again loop through the unused string to find the coords
-        for (unsigned i = 0; i <= point_id; ++i) {
-          std::getline(inputFile, unused_lines);
+          //! Again loop through the unused string to the interested line
+          for (unsigned i = 0; i < total_num_points * 3 + 5 + point_id; ++i) {
+            std::getline(inputFile, unused_lines);
+          }
         }
 
-        //! Get the coordinates
-        inputFile >> coordinates.at(0);
-        inputFile >> coordinates.at(1);
-        inputFile >> coordinates.at(2);
+        //! Loop through points to get all stress
+        inputFile >> current_data.at(0);
+        inputFile >> current_data.at(1);
+        inputFile >> current_data.at(2);
 
-        //! Again loop through the unused string to the interested line
-        for (unsigned i = 0; i < total_num_points * 3 + 4; ++i) {
-          std::getline(inputFile, unused_lines);
-        }
-      } else {
-        //! Again loop through the unused string to the interested line
-        for (unsigned i = 0; i < total_num_points * 3 + 5 + point_id; ++i) {
-          std::getline(inputFile, unused_lines);
-        }
+        //! Store in stress vector
+        vec_data.emplace_back(current_data);
+
+        inputFile.close();
+        std::cout << "The input file for time step: " << std::to_string(t)
+                  << "000 has been read."
+                  << "\n";
       }
 
-      //! Loop through points to get all stress
-      inputFile >> current_stress.at(0);
-      inputFile >> current_stress.at(1);
-      inputFile >> current_stress.at(2);
+      //! Open output file and store all data
+      std::ofstream outputFile(outputfilename);
 
-      //! Store in stress vector
-      stress.emplace_back(current_stress);
+      for (unsigned i = 0; i <= ntime; ++i) {
+        outputFile << time_step.at(i) << "\t" << vec_data.at(i).at(0) << "\t"
+                   << vec_data.at(i).at(1) << "\t" << vec_data.at(i).at(2) << "\n";
+      }
 
-      inputFile.close();
-      std::cout << "The input file for time step: " << std::to_string(t)
-                << "000 has been read."
+      outputFile.close();
+      std::cout << "The output file has been generated."
                 << "\n";
+
+      //! initialize vec_data
+      vec_data.clear();
+
     }
-
-    //! Open output file and store all data
-    std::ofstream outputFile(outputfilename);
-
-    //! Write the coordinates
-    // for (double coordinate : coordinates) {
-    //   outputFile << coordinate << "\t";
-    // }
-    // outputFile << "\n";
-
-    for (unsigned i = 0; i <= ntime; ++i) {
-      outputFile << time_step.at(i) << "\t" << stress.at(i).at(0) << "\t"
-                 << stress.at(i).at(1) << "\t" << stress.at(i).at(2) << "\n";
-    }
-
-    outputFile.close();
-    std::cout << "The output file has been generated."
-              << "\n";
-
   }
 
   catch (std::exception& except) {
