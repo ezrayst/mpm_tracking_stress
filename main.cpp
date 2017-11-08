@@ -27,7 +27,7 @@ int main() {
     const unsigned ntime = 100;
     std::string data; 
 
-    std::vector<std::string> data_vec{"stress", "strain", "acceleration", "velocity"};
+    std::vector<std::string> data_vec{"stress", "strain", "velocity"};
 
     //! User input inputFilename and outputFilename, and point_id
     std::string foldername;
@@ -75,9 +75,9 @@ int main() {
         } else {
           //! Use below for Shyamini's code
           if (t == 0) {
-            inputfilename = foldername + "stress" + std::to_string(t) + ".vtk";
+            inputfilename = foldername + data + std::to_string(t) + ".vtk";
           } else {
-            inputfilename = foldername + "stress" + std::to_string(t) + "000.vtk";
+            inputfilename = foldername + data + std::to_string(t) + "000.vtk";
           }
         }
 
@@ -97,8 +97,18 @@ int main() {
           //! Use below for Krishna's code
           skip_char = 66;
         } else {
+
           //! Use below for Shyamini's code
-          skip_char = 78;
+          if (data == "stress") {
+            skip_char = 78;
+          } else if (data == "strain") {
+            skip_char = 77;
+          } else if (data == "velocity")  {
+            skip_char = 80;
+          } else {
+            std::cout << "Not specified\n";
+            skip_char = 78;
+          }
         }
 
         //! Loop through the unused characters     
