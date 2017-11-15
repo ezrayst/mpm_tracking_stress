@@ -25,9 +25,10 @@ int main() {
     std::vector<double> time_step;
     unsigned total_num_points;
     const unsigned ntime = 100;
-    std::string data; 
+    std::string data;
 
-    std::vector<std::string> data_vec{"stress", "strain", "velocity"};
+    std::vector<std::string> data_vec{"acceleration", "stress", "strain",
+                                      "velocity"};
 
     //! User input inputFilename and outputFilename, and point_id
     std::string foldername;
@@ -43,15 +44,16 @@ int main() {
     std::cout << "Type the point id, default: [0]: ";
     std::getline(std::cin, point_id_str);
     if (point_id_str == "") point_id_str = "0";
-    std::istringstream point_id_ss(point_id_str); 
+    std::istringstream point_id_ss(point_id_str);
     point_id_ss >> point_id;
-
 
     for (const auto& component : data_vec) {
       data = component;
 
       //! Get output file name
-      outputfilename = foldername + data + "_" + std::to_string(point_id) + ".txt";
+      //! Remember to make folder
+      outputfilename = foldername + "results/" + data + "_" +
+                       std::to_string(point_id) + ".txt";
 
       //! Loop through different input file name
       for (unsigned t = 0; t <= ntime; ++t) {
@@ -64,11 +66,14 @@ int main() {
 
           //! Use below for Krishna's code
           if (t < 10) {
-            inputfilename = foldername + data + "00" + std::to_string(t) + "000.vtk";
+            inputfilename =
+                foldername + data + "00" + std::to_string(t) + "000.vtk";
           } else if (t < 100) {
-            inputfilename = foldername + data + "0" + std::to_string(t) + "000.vtk";
+            inputfilename =
+                foldername + data + "0" + std::to_string(t) + "000.vtk";
           } else if (t < 1000) {
-            inputfilename = foldername + data + "" + std::to_string(t) + "000.vtk";
+            inputfilename =
+                foldername + data + "" + std::to_string(t) + "000.vtk";
           } else {
             inputfilename = foldername + data + std::to_string(t) + "000.vtk";
           }
@@ -80,7 +85,6 @@ int main() {
             inputfilename = foldername + data + std::to_string(t) + "000.vtk";
           }
         }
-
 
         //! Open input file and store x-dir
         std::ifstream inputFile;
@@ -103,7 +107,7 @@ int main() {
             skip_char = 78;
           } else if (data == "strain") {
             skip_char = 77;
-          } else if (data == "velocity")  {
+          } else if (data == "velocity") {
             skip_char = 80;
           } else {
             std::cout << "Not specified\n";
@@ -111,7 +115,7 @@ int main() {
           }
         }
 
-        //! Loop through the unused characters     
+        //! Loop through the unused characters
         for (unsigned i = 0; i < skip_char; ++i) {
           inputFile >> unused_char;
         }
@@ -160,7 +164,8 @@ int main() {
 
       for (unsigned i = 0; i <= ntime; ++i) {
         outputFile << time_step.at(i) << "\t" << vec_data.at(i).at(0) << "\t"
-                   << vec_data.at(i).at(1) << "\t" << vec_data.at(i).at(2) << "\n";
+                   << vec_data.at(i).at(1) << "\t" << vec_data.at(i).at(2)
+                   << "\n";
       }
 
       outputFile.close();
@@ -169,7 +174,6 @@ int main() {
 
       //! initialize vec_data
       vec_data.clear();
-
     }
   }
 
