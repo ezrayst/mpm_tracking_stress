@@ -24,7 +24,8 @@ int main() {
     std::array<double, 3> coordinates;
     std::vector<double> time_step;
     unsigned total_num_points;
-    const unsigned ntime = 100;
+    const unsigned ntime = 1800;
+    const unsigned multiplier = 10;
     std::string data;
 
     std::vector<std::string> data_vec{"acceleration", "stress", "strain",
@@ -59,7 +60,7 @@ int main() {
       for (unsigned t = 0; t <= ntime; ++t) {
 
         //! Get vector time_step that contains the time index
-        time_step.push_back(t * 1000);
+        time_step.push_back(t * multiplier);
 
         //! Get inputfilename
         if (mpm_code) {
@@ -67,15 +68,15 @@ int main() {
           //! Use below for Krishna's code
           if (t < 10) {
             inputfilename =
-                foldername + data + "00" + std::to_string(t) + "000.vtk";
+                foldername + data + "000" + std::to_string(t) + "0.vtk";
           } else if (t < 100) {
             inputfilename =
-                foldername + data + "0" + std::to_string(t) + "000.vtk";
+                foldername + data + "00" + std::to_string(t) + "0.vtk";
           } else if (t < 1000) {
             inputfilename =
-                foldername + data + "" + std::to_string(t) + "000.vtk";
+                foldername + data + "0" + std::to_string(t) + "0.vtk";
           } else {
-            inputfilename = foldername + data + std::to_string(t) + "000.vtk";
+            inputfilename = foldername + data + std::to_string(t) + "0.vtk";
           }
         } else {
           //! Use below for Shyamini's code
@@ -155,7 +156,7 @@ int main() {
 
         inputFile.close();
         std::cout << "The input file for time step: " << std::to_string(t)
-                  << "000 has been read."
+                  << " has been read."
                   << "\n";
       }
 
