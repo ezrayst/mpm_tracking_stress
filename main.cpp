@@ -21,15 +21,21 @@ int main() {
 
     //! Initialize a vector stress to contain the stress of a point
     std::vector<std::array<double, 3>> vec_data;
+    std::vector<std::string> data_vec{"stress"};
     std::array<double, 3> coordinates;
     std::vector<double> time_step;
     unsigned total_num_points;
-    const unsigned ntime = 1800;
-    const unsigned multiplier = 10;
+    const unsigned ntime = 49;
+    const unsigned multiplier = 1;
     std::string data;
 
-    std::vector<std::string> data_vec{"acceleration", "stress", "strain",
-                                      "velocity"};
+    if (mpm_code) {
+      data_vec.push_back("acceleration");     
+      data_vec.push_back("velocity");     
+      data_vec.push_back("strain");     
+    } else {
+      // data_vec.push_back("pressure");     
+    }                                 
 
     //! User input inputFilename and outputFilename, and point_id
     std::string foldername;
@@ -68,23 +74,19 @@ int main() {
           //! Use below for Krishna's code
           if (t < 10) {
             inputfilename =
-                foldername + data + "000" + std::to_string(t) + "0.vtk";
+                foldername + data + "00" + std::to_string(t) + "000.vtk";
           } else if (t < 100) {
             inputfilename =
-                foldername + data + "00" + std::to_string(t) + "0.vtk";
+                foldername + data + "0" + std::to_string(t) + "000.vtk";
           } else if (t < 1000) {
             inputfilename =
-                foldername + data + "0" + std::to_string(t) + "0.vtk";
-          } else {
-            inputfilename = foldername + data + std::to_string(t) + "0.vtk";
-          }
-        } else {
-          //! Use below for Shyamini's code
-          if (t == 0) {
-            inputfilename = foldername + data + std::to_string(t) + ".vtk";
+                foldername + data + "" + std::to_string(t) + "000.vtk";
           } else {
             inputfilename = foldername + data + std::to_string(t) + "000.vtk";
           }
+        } else {
+          //! Use below for Shyamini's code
+            inputfilename = foldername + data + std::to_string(t) + ".vtk";
         }
 
         //! Open input file and store x-dir
@@ -96,27 +98,33 @@ int main() {
         char unused_char;
         std::string unused_lines;
         std::array<double, 3> current_data;
-        unsigned skip_char;
 
-        if (mpm_code) {
-          //! Use below for Krishna's code
-          skip_char = 66;
-        } else {
+        // if (mpm_code) {
+        //   //! Use below for Krishna's code
+        //   skip_char = 66;
+        // } else {
 
-          //! Use below for Shyamini's code
-          if (data == "stress") {
-            skip_char = 78;
-          } else if (data == "strain") {
-            skip_char = 77;
-          } else if (data == "velocity") {
-            skip_char = 80;
-          } else {
-            std::cout << "Not specified\n";
-            skip_char = 78;
-          }
+        //   //! Use below for Shyamini's code
+        //   if (data == "stress") {
+        //     skip_char = 78;
+        //   } else if (data == "strain") {
+        //     skip_char = 77;
+        //   } else if (data == "velocity") {
+        //     skip_char = 80;
+        //   } else {
+        //     std::cout << "Not specified\n";
+        //     skip_char = 78;
+        //   }
+        // }
+
+        //! Skip 4 lines for heading
+        unsigned skip_heading_lines = 4;
+        for (unsigned i = 0; i < skip_heading_lines; ++i) {
+          std::getline(inputFile, unused_lines);
         }
 
         //! Loop through the unused characters
+        unsigned skip_char = 6;
         for (unsigned i = 0; i < skip_char; ++i) {
           inputFile >> unused_char;
         }
